@@ -1,0 +1,433 @@
+{% extends "base_dashboard.html" %}
+
+{% block content %}
+<!-- Content Area -->
+<div class="content">
+    
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Intrusion Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #1E2A44;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .progress-container {
+            margin-bottom: 25px;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #FF6B35;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        
+        .fields-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .fields-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-group {
+            display: none;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .input-group:first-child {
+            display: block;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .input-field {
+            position: relative;
+        }
+        
+        .input-field input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: whitesmoke;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .input-field input:focus {
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+            outline: none;
+        }
+        
+        .add-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #FF6B35;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .add-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+        
+        .predict-btn-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .predict-btn {
+            display: none;
+            background-color: #FF6B35;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: pulseAnimation 1.5s infinite;
+        }
+        
+        .predict-btn:hover {
+            background-color: #ff8157;
+            animation: none;
+        }
+        
+        .result-card {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .result-card.normal {
+            background-color: rgba(46, 204, 113, 0.1);
+            border: 2px solid #2ecc71;
+        }
+        
+        .result-card.malicious {
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 2px solid #e74c3c;
+        }
+        
+        .result-title {
+            margin-bottom: 10px;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        .result-card.normal .result-title {
+            color: #2ecc71;
+        }
+        
+        .result-card.malicious .result-title {
+            color: #e74c3c;
+        }
+        
+        .result-details {
+            color: white;
+            font-size: 16px;
+        }
+        
+        .icon-container {
+            margin-bottom: 15px;
+        }
+        
+        .icon-container i {
+            font-size: 48px;
+        }
+        
+        .normal .icon-container i {
+            color: #2ecc71;
+        }
+        
+        .malicious .icon-container i {
+            color: #e74c3c;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loading i {
+            color: #FF6B35;
+            font-size: 32px;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulseAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h5 style="color: #00d4ff;">Detect Attack Using Network Data</h5>
+        
+        <div class="progress-container">
+            <div class="progress-text">
+                <span>Progress</span>
+                <span id="progress-percentage">10%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+        
+        <form id="detection-form">
+            <div class="fields-container">
+                {% for i in range(10) %}
+                <div class="input-group" id="field{{ i+1 }}">
+                    <label for="feature{{ i+1 }}">{{ feature_names[i] }}</label>
+                    <div class="input-field">
+                        <input type="number" step="any" id="feature{{ i+1 }}" name="feature{{ i+1 }}" required>
+                        <button type="button" class="add-btn" onclick="showNext({{ i+1 }})">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="predict-btn-container">
+                <button type="submit" class="predict-btn" id="predict-btn">Predict</button>
+            </div>
+        </form>
+        
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        
+        <div class="result-card" id="result-card">
+            <div class="icon-container">
+                <i class="fas fa-shield-alt" id="result-icon"></i>
+            </div>
+            <div class="result-title" id="result-title">Normal Traffic</div>
+            <div class="result-details" id="result-details">The network traffic pattern is classified as normal.</div>
+        </div>
+    </div>
+
+    <script>
+        const totalFields = 10;
+        let currentField = 1;
+        
+        function showNext(currentNum) {
+            // Validate current field
+            const currentInput = document.getElementById(`feature${currentNum}`);
+            if (!currentInput.value) {
+                currentInput.style.animation = "shake 0.5s";
+                setTimeout(() => {
+                    currentInput.style.animation = "";
+                }, 500);
+                return;
+            }
+            
+            // Show next field with animation
+            if (currentNum < totalFields) {
+                const nextField = document.getElementById(`field${currentNum + 1}`);
+                nextField.style.display = "block";
+                nextField.querySelector('input').focus();
+                currentField++;
+            }
+            
+            // Update progress bar
+            updateProgress();
+            
+            // Show predict button when all fields are visible
+            if (currentNum === totalFields || currentField === totalFields) {
+                document.getElementById('predict-btn').style.display = "block";
+            }
+        }
+        
+        function updateProgress() {
+            const percentage = Math.min((currentField / totalFields) * 100, 100);
+            document.getElementById('progress').style.width = `${percentage}%`;
+            document.getElementById('progress-percentage').textContent = `${Math.round(percentage)}%`;
+        }
+        
+        // Add keypress event to allow pressing Enter to move to next field
+        document.querySelectorAll('.input-field input').forEach((input, index) => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const currentNum = index + 1;
+                    if (currentNum <= totalFields) {
+                        showNext(currentNum);
+                    }
+                }
+            });
+        });
+        
+        // Form submission
+        document.getElementById('detection-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Hide result card if visible
+            document.getElementById('result-card').style.display = 'none';
+            
+            // Show loading indicator
+            document.getElementById('loading').style.display = 'block';
+            
+            // Create form data
+            const formData = new FormData(this);
+            
+            // Send data to Flask backend
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading indicator
+                document.getElementById('loading').style.display = 'none';
+                
+                // Show result card
+                const resultCard = document.getElementById('result-card');
+                const resultIcon = document.getElementById('result-icon');
+                const resultTitle = document.getElementById('result-title');
+                const resultDetails = document.getElementById('result-details');
+                
+                if (data.success) {
+                    if (data.attack_type === 'normal') {
+                        resultCard.className = 'result-card normal';
+                        resultIcon.className = 'fas fa-shield-alt';
+                        resultTitle.textContent = 'Normal Traffic';
+                        resultDetails.textContent = 'The network traffic pattern is classified as normal.';
+                    } else {
+                        resultCard.className = 'result-card malicious';
+                        resultIcon.className = 'fas fa-exclamation-triangle';
+                        resultTitle.textContent = 'Malicious Traffic Detected';
+                        resultDetails.textContent = `Attack type: ${data.attack_name}`;
+                    }
+                } else {
+                    resultCard.className = 'result-card malicious';
+                    resultIcon.className = 'fas fa-exclamation-circle';
+                    resultTitle.textContent = 'Error';
+                    resultDetails.textContent = data.error || 'An unknown error occurred';
+                }
+                
+                resultCard.style.display = 'block';
+            })
+            .catch(error => {
+                // Hide loading indicator
+                document.getElementById('loading').style.display = 'none';
+                
+                // Show error
+                const resultCard = document.getElementById('result-card');
+                resultCard.className = 'result-card malicious';
+                document.getElementById('result-icon').className = 'fas fa-exclamation-circle';
+                document.getElementById('result-title').textContent = 'Error';
+                document.getElementById('result-details').textContent = 'Network error occurred. Please try again.';
+                resultCard.style.display = 'block';
+            });
+        });
+        
+        // Initialize progress
+        updateProgress();
+    </script>
+</body>
+</html>
+   
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2025 Advanced IDS - All Rights Reserved</p>
+    </div>
+</div>
+{% endblock %}

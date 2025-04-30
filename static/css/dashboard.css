@@ -1,0 +1,350 @@
+:root {
+    --primary: #1a2639;
+    --secondary: #ff6b35;
+    --accent: #00d4ff;
+    --dark-bg: #0f1722;
+    --card-bg: #1e2a44;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    font-family: 'Roboto', 'Arial', sans-serif;
+    height: 100%;
+    background: var(--dark-bg);
+    color: #ffffff;
+    font-size: 12px;
+    overflow-x: hidden;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--primary), #00d4ff);
+    padding: 20px 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    transition: width 0.3s ease;
+    z-index: 1000;
+    font-size: 12px;
+}
+
+.sidebar h3 {
+    font-size: 14px;
+    padding: 0 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar a {
+    color: #d1d5db;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.sidebar a:hover, .sidebar a.active {
+    background: var(--secondary);
+    color: #fff;
+}
+
+.sidebar i {
+    margin-right: 8px;
+    width: 20px;
+}
+
+.content {
+    margin-left: 220px;
+    padding: 20px;
+    min-height: 100vh;
+    transition: margin-left 0.3s ease;
+}
+
+.navbar {
+    background: var(--primary);
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.navbar-brand {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.dashboard-header h1 {
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 5px;
+}
+
+.dashboard-header p {
+    color: #9ca3af;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-card i {
+    font-size: 20px;
+    color: var(--secondary);
+}
+
+.stat-card .stat-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.stat-card .stat-label {
+    color: #9ca3af;
+}
+
+/* Success flash message - green */
+.success-flash {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+/* Danger flash message - red */
+.danger-flash {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+.network-visualization {
+    width: 100%;
+    height: 300px;
+    background: var(--card-bg);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px 0;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.monitoring-table h3 {
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+.table {
+    background: var(--card-bg);
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.table th {
+    background: var(--primary);
+    color: #fff;
+    font-size: 9px;
+    padding: 8px;
+    white-space: nowrap;
+}
+
+.table td {
+    color: #333;
+    padding: 8px;
+    font-size: 9px;
+    white-space: nowrap;
+}
+
+.badge {
+    font-size: 8px;
+    padding: 4px 8px;
+}
+
+.danger-zone {
+    background: #dc2626;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    font-size: 10px;
+}
+
+.danger-zone i {
+    margin-right: 8px;
+}
+
+.footer {
+    background: var(--primary);
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 220px;
+    right: 0;
+    font-size: 12px;
+    color: #9ca3af;
+    transition: left 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .sidebar {
+        width: 70px;
+    }
+    .sidebar h3, .sidebar a span {
+        display: none;
+    }
+    .content, .footer {
+        margin-left: 70px;
+        left: 70px;
+    }
+    .stat-card {
+        padding: 10px;
+    }
+    .stat-card i {
+        font-size: 16px;
+    }
+    .stat-card .stat-value {
+        font-size: 14px;
+    }
+    .network-visualization {
+        height: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar {
+        width: 50px;
+    }
+    .content, .footer {
+        margin-left: 50px;
+        left: 50px;
+    }
+    .navbar-brand {
+        font-size: 10px;
+    }
+    .dashboard-header h1 {
+        font-size: 14px;
+    }
+    .dashboard-header p {
+        font-size: 8px;
+    }
+    .stat-card {
+        margin-bottom: 10px;
+    }
+    .network-visualization {
+        height: 150px;
+    }
+    .monitoring-table h3 {
+        font-size: 10px;
+    }
+    .danger-zone {
+        font-size: 9px;
+        padding: 8px;
+    }
+    .footer {
+        font-size: 7px;
+    }
+}
+
+/* Table Responsiveness */
+@media (max-width: 768px) {
+    .table th, .table td {
+        font-size: 8px;
+        padding: 6px;
+    }
+    .badge {
+        font-size: 7px;
+        padding: 3px 6px;
+    }
+}
+
+@media (max-width: 576px) {
+    .table th, .table td {
+        font-size: 7px;
+        padding: 4px;
+    }
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Hamburger Button */
+.hamburger {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    width: 30px;
+    height: 22px;
+    z-index: 1100;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.hamburger div {
+    height: 4px;
+    background: #fff;
+    border-radius: 2px;
+    transition: all 0.4s ease;
+}
+
+/* Hamburger animation when open */
+.hamburger.active div:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active div:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active div:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Hide sidebar on mobile */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.4s ease;
+        width: 220px;
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .dashboard-content {
+        margin-left: 0 !important;
+        padding: 60px 15px 20px;
+    }
+
+    .footer {
+        left: 0 !important;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+}

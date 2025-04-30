@@ -1,0 +1,369 @@
+{% extends "base_dashboard.html" %}
+
+{% block content %}
+<!-- Content Area -->
+<div class="content">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" href="#" style="color:#00d4ff;">Alerts</a>
+    </nav>
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Alerts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #1E2A44;
+            color: white;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .alert-bell {
+            color: #FF6B35;
+            animation: shake 1.5s infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            10% { transform: rotate(-15deg); }
+            20% { transform: rotate(15deg); }
+            30% { transform: rotate(-15deg); }
+            40% { transform: rotate(15deg); }
+            50% { transform: rotate(0deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .current-alert {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            transition: all 0.5s ease;
+            border-left: 5px solid;
+        }
+        
+        .current-alert.critical {
+            border-left-color: #e74c3c;
+        }
+        
+        .current-alert.high {
+            border-left-color: #f39c12;
+        }
+        
+        .current-alert.medium {
+            border-left-color: #f1c40f;
+        }
+        
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .alert-title {
+            font-weight: bold;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert-severity {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .critical .alert-severity {
+            background-color: #e74c3c;
+        }
+        
+        .high .alert-severity {
+            background-color: #f39c12;
+        }
+        
+        .medium .alert-severity {
+            background-color: #f1c40f;
+            color: #333;
+        }
+        
+        .alert-details {
+            margin: 15px 0;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .alert-time {
+            font-size: 0.9rem;
+            color: #bbb;
+            text-align: right;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .history-table th, .history-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .history-table th {
+            background: rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+        
+        .history-table tr.high-severity {
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+        
+        .history-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .severity-badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .badge-critical {
+            background-color: #e74c3c;
+        }
+        
+        .badge-high {
+            background-color: #f39c12;
+        }
+        
+        .badge-medium {
+            background-color: #f1c40f;
+            color: #333;
+        }
+        
+        .refresh-btn {
+            background-color: #FF6B35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .refresh-btn:hover {
+            background-color: #ff8157;
+        }
+        
+        .no-alerts {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .history-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .alert-title {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-bell alert-bell"></i> Security Alerts</h1>
+        
+        <button class="refresh-btn" onclick="loadAlerts()">
+            <i class="fas fa-sync-alt"></i> Refresh Alerts
+        </button>
+        
+        <h2>Current Alert</h2>
+        <div id="currentAlertContainer">
+            <!-- Single current alert will appear here -->
+            <div class="no-alerts" id="noAlertsMessage">
+                <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <p>No active security alerts</p>
+            </div>
+        </div>
+        
+        <h2>Attack History</h2>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Attack Name</th>
+                    <th>Severity</th>
+                    <th>Date Detected</th>
+                    <th>Time Detected</th>
+                </tr>
+            </thead>
+            <tbody id="historyTable">
+                <!-- History will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Load alerts when page opens
+        document.addEventListener('DOMContentLoaded', loadAlerts);
+        
+        function loadAlerts() {
+            fetch('/get_alerts')
+                .then(response => response.json())
+                .then(data => {
+                    renderCurrentAlert(data);
+                    renderHistory(data);
+                })
+                .catch(error => {
+                    console.error('Error loading alerts:', error);
+                    alert('Failed to load alerts');
+                });
+        }
+        
+        function renderCurrentAlert(alerts) {
+            const container = document.getElementById('currentAlertContainer');
+            const noAlerts = document.getElementById('noAlertsMessage');
+            
+            // Clear previous alert
+            container.querySelector('.current-alert')?.remove();
+            
+            // Show most recent alert if available
+            if (alerts.length > 0) {
+                noAlerts.style.display = 'none';
+                const alert = alerts[0];
+                
+                const alertCard = document.createElement('div');
+                alertCard.className = `current-alert ${alert.severity.toLowerCase()}`;
+                
+                alertCard.innerHTML = `
+                    <div class="alert-header">
+                        <div class="alert-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            ${alert.attack_name}
+                        </div>
+                        <div class="alert-severity">${alert.severity}</div>
+                    </div>
+                    <div class="alert-details">
+                        ${getAlertDescription(alert.attack_name)}
+                    </div>
+                    <div class="alert-time">
+                        ${formatDate(alert.day_detected)} at ${alert.time_detected}
+                    </div>
+                `;
+                
+                container.prepend(alertCard);
+            } else {
+                noAlerts.style.display = 'block';
+            }
+        }
+        
+        function renderHistory(alerts) {
+            const table = document.getElementById('historyTable');
+            table.innerHTML = '';
+            
+            if (alerts.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="4" style="text-align: center;">No attack history found</td>`;
+                table.appendChild(row);
+                return;
+            }
+            
+            alerts.forEach(alert => {
+                const row = document.createElement('tr');
+                if (alert.severity === 'High' || alert.severity === 'Critical') {
+                    row.className = 'high-severity';
+                }
+                
+                row.innerHTML = `
+                    <td>${alert.attack_name}</td>
+                    <td>
+                        <span class="severity-badge badge-${alert.severity.toLowerCase()}">
+                            ${alert.severity}
+                        </span>
+                    </td>
+                    <td>${formatDate(alert.day_detected)}</td>
+                    <td>${alert.time_detected}</td>
+                `;
+                
+                table.appendChild(row);
+            });
+        }
+        
+        function formatDate(dateString) {
+            const [year, month, day] = dateString.split('-');
+            return `${day}/${month}/${year.slice(2)}`;
+        }
+        
+        function getAlertDescription(attackName) {
+            const descriptions = {
+                'neptune': 'Denial of Service attack flooding target with SYN packets',
+                'warezclient': 'Unauthorized access attempt to download illegal software',
+                'ipsweep': 'Network reconnaissance to identify active hosts',
+                'portsweep': 'Scanning multiple ports to find vulnerable services',
+                'teardrop': 'Fragmented packet attack causing system crashes',
+                'nmap': 'Network mapping and port scanning activity',
+                'satan': 'Security Administrator Tool for Analyzing Networks scan',
+                'smurf': 'ICMP flood attack amplifying traffic',
+                'pod': 'Ping of Death attack with oversized packets',
+                'back': 'Back orifice malware activity detected',
+                'guess_passwd': 'Brute force password guessing attempt',
+                'ftp_write': 'Unauthorized FTP write access attempt',
+                'multihop': 'Attacker moving through multiple systems',
+                'rootkit': 'Rootkit installation attempt detected',
+                'buffer_overflow': 'Attempt to exploit buffer overflow vulnerability',
+                'imap': 'IMAP service exploitation attempt',
+                'warezmaster': 'Software piracy master server connection',
+                'phf': 'PHF CGI script exploitation attempt',
+                'land': 'LAND attack sending spoofed packets',
+                'loadmodule': 'Attempt to load malicious kernel module',
+                'spy': 'Spyware communication detected',
+                'perl': 'Malicious Perl script execution attempt'
+            };
+            
+            return descriptions[attackName.toLowerCase()] || 'Suspicious network activity detected';
+        }
+    </script>
+</body>
+</html>
+   
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2025 Advanced IDS - All Rights Reserved</p>
+    </div>
+</div>
+{% endblock %}

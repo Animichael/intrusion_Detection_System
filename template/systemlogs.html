@@ -1,0 +1,315 @@
+{% extends "base_dashboard.html" %}
+
+{% block content %}
+<!-- Content Area -->
+<div class="content">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" href="#">System Security Logs</a>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>System Logs</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+            <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+            <style>
+                :root {
+                    --primary: #354057;
+                    --bg-dark: #1E2A44;
+                    --bg-light: rgba(255,255,255,0.1);
+                    --text-light: #ffffff;
+                }
+                
+                body {
+                    background-color: var(--bg-dark);
+                    color: var(--text-light);
+                    padding: 20px;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+                
+                .container {
+                    max-width: 1400px;
+                    margin: 0 auto;
+                }
+                
+                .header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 30px;
+                    flex-wrap: wrap;
+                    gap: 20px;
+                }
+                
+                h1 {
+                    color: var(--text-light);
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                
+                .filter-container {
+                    display: flex;
+                    gap: 15px;
+                    flex-wrap: wrap;
+                }
+                
+                select, button {
+                    padding: 10px 15px;
+                    border-radius: 6px;
+                    border: none;
+                    background-color: var(--primary);
+                    color: white;
+                    cursor: pointer;
+                }
+                
+                select {
+                    appearance: none;
+                    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+                    background-repeat: no-repeat;
+                    background-position: right 10px center;
+                    background-size: 15px;
+                    padding-right: 35px;
+                }
+                
+                button:hover {
+                    background-color: #ff8c5a;
+                }
+                
+                .log-table {
+                    width: 100%;
+                    background-color: var(--bg-light);
+                    backdrop-filter: blur(10px);
+                    border-radius: 10px;
+                    overflow: hidden;
+                }
+                
+                .log-table th {
+                    background-color: rgba(0,0,0,0.2);
+                }
+                
+                .log-badge {
+                    padding: 4px 10px;
+                    border-radius: 4px;
+                    font-size: 0.85rem;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+                
+                .badge-attack {
+                    background-color: rgba(231, 76, 60, 0.2);
+                    
+                }
+                
+                .badge-user {
+                    background-color: rgba(46, 204, 113, 0.2);
+                   
+                }
+                
+                .severity-high {
+                    color: #f39c12;
+                    font-weight: bold;
+                }
+                
+                .severity-critical {
+                    color: #e74c3c;
+                    font-weight: bold;
+                }
+                
+                @media (max-width: 768px) {
+                    .header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                    }
+                    
+                    .filter-container {
+                        width: 100%;
+                    }
+                    
+                    select, button {
+                        width: 100%;
+                    }
+                }
+                /* Responsive enhancements without changing your colors */
+        @media (max-width: 768px) {
+            .log-table th, 
+            .log-table td {
+                padding: 0.5rem !important;
+                font-size: 0.85rem;
+            }
+            
+            .log-badge {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            #logsTable_wrapper .dataTables_info,
+            #logsTable_wrapper .dataTables_paginate {
+                text-align: center !important;
+                float: none !important;
+                margin-top: 1rem;
+            }
+        }
+        
+        /* Mobile-first table styling */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+       
+        .content {
+            padding: 1rem;
+        }
+        
+        
+        .badge-attack {
+            background-color: rgba(231, 76, 60, 0.2) !important;
+        }
+        
+        .badge-user {
+            background-color: rgba(46, 204, 113, 0.2) !important;
+        }
+        
+        .severity-high {
+            color: #f39c12 !important;
+        }
+        
+        .severity-critical {
+            color: #e74c3c !important;
+        }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1 style="color:#FF6B35">
+                        <i class="fas fa-clipboard-list"></i>
+                        System Logs
+                    </h1>
+                    <div class="filter-container">
+                        <select id="logType">
+                            <option value="">All Logs</option>
+                            <option value="attack">Attack Logs</option>
+                            <option value="user">User Logs</option>
+                        </select>
+                        <select id="timeRange">
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 90 Days</option>
+                            <option value="all">All Time</option>
+                        </select>
+                        <button id="refreshBtn">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+                
+                <table id="logsTable" class="log-table display nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Severity</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be loaded via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+              <!-- Footer -->
+              <div class="footer">
+                <p>© 2025 Advanced IDS - All Rights Reserved</p>
+            </div>
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+            
+            <script>
+                $(document).ready(function() {
+                    const table = $('#logsTable').DataTable({
+                        responsive: true,
+                        ajax: {
+                            url: '/get_system_logs',
+                            dataSrc: '',
+                            error: function(xhr) {
+                                alert('Failed to load logs: ' + (xhr.responseJSON?.error || 'Server error'));
+                            }
+                        },
+                        columns: [
+                            { 
+                                data: 'timestamp',
+                                render: function(data) {
+                                    return new Date(data).toLocaleString();
+                                }
+                            },
+                            { 
+                                data: 'log_type',
+                                render: function(data) {
+                                    const typeClass = data === 'attack' ? 'badge-attack' : 'badge-user';
+                                    const icon = data === 'attack' ? 'fa-bolt' : 'fa-user';
+                                    return `
+                                        <span class="log-badge ${typeClass}">
+                                            <i class="fas ${icon}"></i>
+                                            ${data.charAt(0).toUpperCase() + data.slice(1)}
+                                        </span>
+                                    `;
+                                }
+                            },
+                            { 
+                                data: 'description',
+                                render: function(data, type, row) {
+                                    if (row.activity) {
+                                        return `${data}: ${row.activity}`;
+                                    }
+                                    return data;
+                                }
+                            },
+                            { 
+                                data: 'severity',
+                                render: function(data) {
+                                    if (!data) return '-';
+                                    const severityClass = data.toLowerCase() === 'critical' ? 'severity-critical' :
+                                                      data.toLowerCase() === 'high' ? 'severity-high' : '';
+                                    return `<span class="${severityClass}">${data}</span>`;
+                                }
+                            },
+                            { 
+                                data: 'username',
+                                render: function(data) {
+                                    return data || 'System';
+                                }
+                            }
+                        ],
+                        order: [[0, 'desc']],
+                        language: {
+                            emptyTable: "No system logs available",
+                            zeroRecords: "No matching logs found"
+                        }
+                    });
+        
+                    // Filtering functionality
+                    $('#refreshBtn').click(function() {
+                        const type = $('#logType').val();
+                        const range = $('#timeRange').val();
+                        
+                        table.ajax.url(`/get_system_logs?type=${type}&range=${range}`).load();
+                        
+                        // Adding loading effect
+                        $(this).html('<i class="fas fa-spinner fa-spin"></i> Loading...');
+                        setTimeout(() => {
+                            $(this).html('<i class="fas fa-sync-alt"></i> Refresh');
+                        }, 1000);
+                    });
+                });
+            </script>
+        </body>
+        </html>     
+</div>
+{% endblock %}

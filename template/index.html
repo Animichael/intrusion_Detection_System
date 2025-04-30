@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDS - Advanced Intrusion Detection System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/login.css">
+</head>
+<body>
+    <div class="background-container"></div>
+<canvas class="network-visualization" id="networkCanvas"></canvas>
+<div class="overlay"></div>
+
+
+
+
+
+
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="logo">
+            <div class="shield"><i class="fas fa-shield-alt"></i></div>
+        </div>
+        <h2 class="login-title">Advanced IDS</h2>
+        <p class="login-subtitle">Intrusion Detection System Portal</p>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="custom-flash {{ category }}-flash">
+                            {% if category == 'success' %}
+                                <i class="fas fa-check-circle flash-icon"></i>
+                            {% else %}
+                                <i class="fas fa-exclamation-circle flash-icon"></i>
+                            {% endif %}
+                            <span class="flash-message">{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form id="loginForm" method="POST" action="{{ url_for('index') }}">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+                <label for="username"><i class="fas fa-user me-2"></i>Username</label>
+            </div>
+
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                <label for="password"><i class="fas fa-lock me-2"></i>Password</label>
+            </div>
+
+            <div class="remember-forgot mt-3">
+                <div class="remember-me">
+                    <input class="form-check-input me-2" type="checkbox" value="" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">
+                        Remember me
+                    </label>
+                </div>
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-login mt-4">
+                <i class="fas fa-sign-in-alt me-2"></i> Log In
+            </button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <a href="{{url_for('register')}}" class="register-link">
+            <i class="fas fa-user-plus me-1"></i> Create a new account
+        </a>
+
+        <div class="login-footer">
+            <p>Protected by Advanced IDS Technology</p>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/login.js"></script>
+    <!-- Auto-dismiss Flash Messages After 5 Seconds -->
+    <script>
+        setTimeout(() => {
+            let alerts = document.querySelectorAll(".custom-flash");
+            alerts.forEach(alert => alert.remove());
+        }, 5000);
+    </script>
+</body>
+</html>
