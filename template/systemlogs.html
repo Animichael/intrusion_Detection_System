@@ -17,9 +17,9 @@
             <style>
                 :root {
                     --primary: #354057;
-                    --bg-dark: #1E2A44;
-                    --bg-light: rgba(255,255,255,0.1);
-                    --text-light: #ffffff;
+                    --bg-dark: transparent;
+                    --bg-light: #ffffff;
+                    --text-light: #2c3e50;
                 }
                 
                 body {
@@ -84,10 +84,12 @@
                     backdrop-filter: blur(10px);
                     border-radius: 10px;
                     overflow: hidden;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
                 }
                 
                 .log-table th {
-                    background-color: rgba(0,0,0,0.2);
+                    background-color: #f8f9fa;
+                    color: #2c3e50;
                 }
                 
                 .log-badge {

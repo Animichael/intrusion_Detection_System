@@ -24,8 +24,8 @@
         }
         
         body {
-            background-color: #1E2A44;
-            color: white;
+            background-color: transparent;
+            color: #2c3e50;
             padding: 20px;
         }
         
@@ -56,13 +56,14 @@
         }
         
         .current-alert {
-            background: rgba(255, 255, 255, 0.1);
+            background: #ffffff;
             backdrop-filter: blur(10px);
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 30px;
             transition: all 0.5s ease;
             border-left: 5px solid;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .current-alert.critical {
@@ -118,7 +119,7 @@
         
         .alert-time {
             font-size: 0.9rem;
-            color: #bbb;
+            color: #666;
             text-align: right;
         }
         
@@ -126,18 +127,22 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 30px;
-            background: rgba(255, 255, 255, 0.1);
+            background: #ffffff;
             backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         .history-table th, .history-table td {
             padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            color: #2c3e50;
         }
         
         .history-table th {
-            background: rgba(0, 0, 0, 0.2);
+            background: #f8f9fa;
             font-weight: bold;
         }
         
@@ -146,7 +151,7 @@
         }
         
         .history-table tr:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.05);
         }
         
         .severity-badge {

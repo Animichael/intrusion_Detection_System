@@ -14,8 +14,8 @@
             --primary: #1a2639;
             --secondary: #ff6b35;
             --accent: #00d4ff;
-            --dark-bg: #0f1722;
-            --card-bg: #1e2a44;
+            --dark-bg: transparent;
+            --card-bg: #ffffff;
         }
 
         * {
@@ -28,7 +28,7 @@
             font-family: 'Roboto', 'Arial', sans-serif;
             height: 100%;
             background: var(--dark-bg);
-            color: #ffffff;
+            color: #2c3e50;
             font-size: 9px;
             overflow-x: hidden;
         }
@@ -96,6 +96,7 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .settings-section h2 {
@@ -105,25 +106,25 @@
         }
 
         .form-label {
-            color: #d1d5db;
+            color: #495057;
             font-size: 9px;
             margin-bottom: 5px;
         }
 
         .form-control, .form-select {
-            background: #2d3b55;
-            border: none;
-            color: #fff;
+            background: #f8f9fa;
+            border: 1px solid #ced4da;
+            color: #2c3e50;
             font-size: 9px;
             padding: 8px;
             border-radius: 5px;
         }
 
         .form-control:focus {
-            background: #2d3b55;
+            background: #ffffff;
             border: 1px solid var(--accent);
-            box-shadow: none;
-            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.25);
+            color: #2c3e50;
         }
 
         .btn-custom {
